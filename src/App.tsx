@@ -1,26 +1,89 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import {interval, map, Subject, timer} from "rxjs";
+import {takeUntil, first, tap} from 'rxjs/operators';
+import style from './App.module.css';
+import {TimeScreen} from './components/screen/TimeScreen';
+import {Buttons} from './components/buttons/Button';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [time, setTime] = useState(0);
+    const [stopWatchOn, setStopWatchOn] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = new Subject();
+        interval(1000)
+            .pipe(takeUntil(unsubscribe))
+            .subscribe(() => {
+                if (stopWatchOn) {
+                    setTime((val) => val + 1);
+                }
+            });
+        return () => {
+            unsubscribe.next(false);
+            unsubscribe.complete();
+        };
+    }, [stopWatchOn]);
+
+    const onClickHandleStart = () => {
+        setStopWatchOn(true);
+    };
+
+    const onClickHandleStop = () => {
+        if (time !== 0) {
+            setStopWatchOn(false);
+            setTime(0);
+        }
+    };
+
+    // const onClickHandleWait = () => {
+    //     debugger
+    //     timer(300)
+    //         .pipe(
+    //             first(),
+    //             tap(() => {
+    //                 setStopWatchOn(false);
+    //             })
+    //         )
+    //         .subscribe();
+    // };
+
+    let wasClicked = false;
+    let timeout: NodeJS.Timeout;
+    const onClickHandleWait = () => {
+        if(wasClicked) {
+            wasClicked = false;
+            clearTimeout(timeout);
+            setStopWatchOn(false);
+            return;
+        }
+        wasClicked = true;
+        timeout = setTimeout(() => {
+            wasClicked = false;
+        }, 300);
+    };
+
+    const onClickHandleReset = () => {
+        setTime(0);
+        setStopWatchOn(false);
+        if (time !== 0) {
+            onClickHandleStart();
+        }
+    };
+
+    return (
+        <div className={style.container}>
+            <TimeScreen time={time}/>
+            <Buttons
+                start={onClickHandleStart}
+                stop={onClickHandleStop}
+                wait={onClickHandleWait}
+                reset={onClickHandleReset}
+                watchOn={stopWatchOn}
+            />
+        </div>
+    );
 }
+
 
 export default App;

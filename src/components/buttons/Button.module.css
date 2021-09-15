@@ -1,0 +1,55 @@
+.display {
+    display: none;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100vw;
+}
+
+.buttons button {
+    text-decoration: none;
+    border: none;
+    font-size: 200%;
+    position: relative;
+    width: 150px;
+}
+
+.buttons button:after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    visibility: hidden;
+    background-color: rgba(124, 252, 0, 1);
+    transition: all .3s ease;
+    transform: scaleX(0);
+}
+
+.buttons button:hover:after {
+    visibility: visible;
+    transform: scaleX(1);
+}
+
+.buttons button:hover {
+    cursor: pointer;
+}
+
+.buttons button:active {
+    opacity: 0.3;
+}
+
+@media (max-width: 600px) {
+    .buttons button {
+        text-decoration: none;
+        border: none;
+        font-size: 200%;
+        position: relative;
+        width: 50%;
+    }
+}
