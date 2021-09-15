@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {interval, map, Subject, timer} from "rxjs";
-import {takeUntil, first, tap} from 'rxjs/operators';
+import {interval, Subject,} from "rxjs";
+import {takeUntil,} from 'rxjs/operators';
 import style from './App.module.css';
 import {TimeScreen} from './components/screen/TimeScreen';
 import {Buttons} from './components/buttons/Button';
@@ -36,22 +36,10 @@ function App() {
         }
     };
 
-    // const onClickHandleWait = () => {
-    //     debugger
-    //     timer(300)
-    //         .pipe(
-    //             first(),
-    //             tap(() => {
-    //                 setStopWatchOn(false);
-    //             })
-    //         )
-    //         .subscribe();
-    // };
-
     let wasClicked = false;
     let timeout: NodeJS.Timeout;
     const onClickHandleWait = () => {
-        if(wasClicked) {
+        if (wasClicked) {
             wasClicked = false;
             clearTimeout(timeout);
             setStopWatchOn(false);
